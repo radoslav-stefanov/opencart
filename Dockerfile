@@ -1,4 +1,5 @@
-FROM php:"${PHP_VERSION}"-fpm
+#FROM php:${PHP_VERSION}-fpm
+FROM wordpress:6.0.0${PHP_VERSION}-fpm-alpine
 
 RUN apt-get update && apt-get install -y \
         curl \
