@@ -1,5 +1,4 @@
-#FROM php:${PHP_VERSION}-fpm
-FROM php:($PHP_VERSION)-fpm
+FROM php:${PHP_VERSION}-fpm
 
 RUN echo ${PHP_VERSION}
 
