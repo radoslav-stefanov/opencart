@@ -1,5 +1,7 @@
 FROM php:${PHP_VERSION}-fpm
 
+ARG PHP_VERSION
+
 RUN echo ${PHP_VERSION}
 
 RUN apt-get update && apt-get install -y \
