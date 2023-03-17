@@ -5,6 +5,7 @@ on: [push]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  PHP_VERSION: ${{ matrix.php_version }}
 
 jobs:
   build-and-push-image:
@@ -38,5 +39,5 @@ jobs:
         run: |
           IMAGE_TAG=php${{ matrix.php_version }}-fpm
           echo "Building image with tag: $IMAGE_TAG"
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG -f Dockerfile --build-arg PHP_VERSION=${{ matrix.php_version }} .
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG -f Dockerfile --build-arg PHP_VERSION=${{ env.PHP_VERSION }} .
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
