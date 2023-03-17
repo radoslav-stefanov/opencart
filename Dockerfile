@@ -1,7 +1,4 @@
-#FROM wordpress:6.0.0${PHP_VERSION}-fpm-alpine
 FROM php:${PHP_VERSION}-fpm
-
-RUN echo php:{PHP_VERSION}-fpm
 
 RUN apt-get update && apt-get install -y \
         curl \
@@ -10,7 +7,7 @@ RUN apt-get update && apt-get install -y \
         zip \
     && docker-php-ext-install -j$(nproc) iconv mbstring mysqli
 
-RUN apt-get update && apt-get install -y libpng-dev 
+RUN apt-get update && apt-get install -y libpng-dev
 RUN apt-get install -y \
     libwebp-dev \
     libjpeg62-turbo-dev \
@@ -26,10 +23,10 @@ RUN docker-php-ext-configure gd \
     --with-xpm-dir \
     --with-freetype-dir
 
-RUN docker-php-ext-install gd    
+RUN docker-php-ext-install gd
 
-RUN apt-get install -y libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip 
-    
+RUN apt-get install -y libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www
