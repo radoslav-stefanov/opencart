@@ -1,7 +1,6 @@
-FROM php:7.4-fpm
+FROM php:$PHP_VERSION-fpm
 
-
-RUN echo $PHP_VERSION
+RUN echo ${PHP_VERSION}
 
 RUN apt-get update && apt-get install -y \
         curl \
