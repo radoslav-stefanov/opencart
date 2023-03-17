@@ -5,9 +5,7 @@ RUN apt-get update && apt-get install -y \
         wget \
         git \
         zip \
-    && docker-php-ext-install -j$(nproc) iconv mbstring mysqli \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
+    && docker-php-ext-install -j$(nproc) iconv mbstring mysqli
 
 RUN apt-get update && apt-get install -y libpng-dev 
 RUN apt-get install -y \
