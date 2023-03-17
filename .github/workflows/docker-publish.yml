@@ -7,18 +7,14 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  build-and-push:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: [7.6,7.7]
-    permissions:
-      contents: read
-      packages: write
-
+        php_version: ['7.3', '7.4']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -27,16 +23,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3.3.0
+      - name: Build and push image
+        uses: docker/build-push-action@v2
         with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php${{ matrix.php_version }}
- 
-      - name: Build and push Docker image
-        run: |
-          IMAGE_TAG=php${{ matrix.php_version }}-fpm-alpine
-          echo "Building image with tag: $IMAGE_TAG"
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG -f Dockerfile --build-arg PHP_VERSION=${{ matrix.php_version }} .
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+          context: .
+          push: true
+          tags: |
+            ghcr.io/radoslav-stefanov/testing:php${{ matrix.php_version }}-fpm
+            ghcr.io/radoslav-stefanov/testing:php${{ matrix.php_version }}-fpm-${{ github.sha }}
+          build-args: |
+            PHP_VERSION=${{ matrix.php_version }}
+          registry: ghcr.io
