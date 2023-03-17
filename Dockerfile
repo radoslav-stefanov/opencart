@@ -1,4 +1,4 @@
-FROM wordpress:6.0.0${PHP_VERSION}-fpm-alpine
+FROM php:${PHP_VERSION}-fpm
 
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
