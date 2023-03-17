@@ -1,4 +1,4 @@
-FROM php:${PHP_VERSION}-fpm
+FROM php:${PHP_VERSION}
 
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
