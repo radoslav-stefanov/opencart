@@ -6,7 +6,7 @@ LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y zip libzip-dev
+RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
