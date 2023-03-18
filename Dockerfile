@@ -19,6 +19,8 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
   && docker-php-ext-install gd
 
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 RUN touch /usr/local/etc/php/conf.d/uploads.ini \
     && echo "upload_max_filesize = 10240M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size = 10240M" >> /usr/local/etc/php/conf.d/uploads.ini \
