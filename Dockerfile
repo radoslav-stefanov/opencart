@@ -1,6 +1,7 @@
 ARG PHP_VERSION
 
-FROM php:${PHP_VERSION}-fpm
+#FROM php:${PHP_VERSION}-fpm
+FROM php:7.4-fpm
 
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
@@ -12,9 +13,12 @@ RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure zip \
-    && docker-php-ext-install zip
+    && docker-php-ext-install -j$(nproc) zip
 
-RUN docker-php-ext-install pdo pdo_mysql gd
+RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv
+
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
+  && docker-php-ext-install gd
 
 RUN touch /usr/local/etc/php/conf.d/uploads.ini \
     && echo "upload_max_filesize = 10240M" >> /usr/local/etc/php/conf.d/uploads.ini \
