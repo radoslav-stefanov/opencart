@@ -14,7 +14,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-configure zip \
     && docker-php-ext-install zip
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring
+RUN docker-php-ext-install pdo pdo_mysql
 
 RUN docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
     --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
