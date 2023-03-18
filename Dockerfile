@@ -5,6 +5,9 @@ FROM php:${PHP_VERSION}-fpm
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
 
+RUN apt-get install -y \
+        libzip-dev 
+
 RUN docker-php-ext-configure zip
 
 RUN docker-php-ext-install pdo pdo_mysql gd zip
