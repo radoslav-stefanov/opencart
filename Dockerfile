@@ -5,13 +5,16 @@ FROM php:${PHP_VERSION}-fpm
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
 
-RUN apt-get update && \
-    apt-get install -y \
-        zlib1g-dev
+# Install system dependencies
+RUN apt-get update && apt-get install -y zip
 
-RUN docker-php-ext-configure zip
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql gd zip
+RUN docker-php-ext-configure zip \
+    && docker-php-ext-install zip
+
+RUN docker-php-ext-install pdo pdo_mysql gd
 
 RUN touch /usr/local/etc/php/conf.d/uploads.ini \
     && echo "upload_max_filesize = 10240M" >> /usr/local/etc/php/conf.d/uploads.ini \
