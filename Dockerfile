@@ -5,8 +5,9 @@ FROM php:${PHP_VERSION}-fpm
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
 
-RUN apt-get install -y \
-        libzip-dev 
+RUN apt-get update && \
+    apt-get install -y \
+        zlib1g-dev
 
 RUN docker-php-ext-configure zip
 
