@@ -14,7 +14,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-configure zip \
     && docker-php-ext-install -j$(nproc) zip
 
-RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv
+RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
   && docker-php-ext-install gd
