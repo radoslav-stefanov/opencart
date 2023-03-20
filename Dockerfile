@@ -1,6 +1,7 @@
 ARG PHP_VERSION
 
-FROM php:${PHP_VERSION}-fpm
+FROM php:7.3-fpm
+#FROM php:${PHP_VERSION}-fpm
 
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
@@ -16,8 +17,15 @@ RUN docker-php-ext-configure zip \
 
 RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
-  && docker-php-ext-install gd
+RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.4" ]; then \
+    docker-php-ext-configure gd --with-jpeg --with-freetype \
+      && docker-php-ext-install gd; \
+    fi
+
+RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.3" ]; then \
+    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
+      && docker-php-ext-install gd; \
+    fi
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
