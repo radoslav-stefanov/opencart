@@ -22,20 +22,12 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 #      && docker-php-ext-install gd; \
 #    fi
 
-RUN set -eux \
-	# Installation: Generic
-	# Type:         Custom extension
-	&& EXTENSION_DIR="$( php -i | grep ^extension_dir | awk -F '=>' '{print $2}' | xargs )" \
-&& if [ ! -d "${EXTENSION_DIR}" ]; then mkdir -p "${EXTENSION_DIR}"; fi \
-&& curl -sS --fail -k https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_$(dpkg-architecture --query DEB_HOST_GNU_CPU | sed 's/_/-/g').tar.gz -L -o ioncube.tar.gz \
-&& tar xvfz ioncube.tar.gz \
-&& cd ioncube \
-&& cp "ioncube_loader_lin_7.3.so" "${EXTENSION_DIR}/ioncube.so" \
-&& cd ../ \
-&& rm -rf ioncube \
-&& rm -rf ioncube.tar.gz \
- \
-	&& true
+curl -fSL 'http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \
+    && mkdir -p ioncube \
+    && tar -xf ioncube.tar.gz -C ioncube --strip-components=1 \
+    && rm ioncube.tar.gz \
+    && mv ioncube/ioncube_loader_lin_7.3.so /var/www/ioncube_loader_lin_7.3.so \
+    && rm -r ioncube
 
 #RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.3" ]; then \
 #    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
