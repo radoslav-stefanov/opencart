@@ -22,12 +22,8 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 #      && docker-php-ext-install gd; \
 #    fi
 
-curl -fSL 'http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \
-    && mkdir -p ioncube \
-    && tar -xf ioncube.tar.gz -C ioncube --strip-components=1 \
-    && rm ioncube.tar.gz \
-    && mv ioncube/ioncube_loader_lin_7.3.so /var/www/ioncube_loader_lin_7.3.so \
-    && rm -r ioncube
+ENV PHP_VERSION=7.3
+RUN mkdir -p /usr/local/lib && curl -sSlL  -o /tmp/ioncube.tar.gz https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && tar -x --strip-components=1 -C /usr/local/lib -f /tmp/ioncube.tar.gz ioncube/ioncube_loader_lin_${PHP_VERSION}.so
 
 #RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.3" ]; then \
 #    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
