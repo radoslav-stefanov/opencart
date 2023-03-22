@@ -7,7 +7,7 @@ LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev wget
+RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev wget
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -22,7 +22,7 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 #      && docker-php-ext-install gd; \
 #    fi
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr  \
       && docker-php-ext-install gd
 
 RUN mkdir /tmp/ioncube \
