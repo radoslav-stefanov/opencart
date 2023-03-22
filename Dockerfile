@@ -22,8 +22,8 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 #      && docker-php-ext-install gd; \
 #    fi
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
-  && docker-php-ext-install gd
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
+      && docker-php-ext-install gd
 
 RUN mkdir /tmp/ioncube \
   && cd /tmp/ioncube \
