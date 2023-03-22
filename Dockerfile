@@ -7,7 +7,7 @@ LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Alpine Linux."
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev
+RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev wget
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -22,10 +22,14 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 #      && docker-php-ext-install gd; \
 #    fi
 
-ENV PHP_VERSION=7.3
-RUN mkdir -p /usr/local/lib && curl -sSlL  -o /tmp/ioncube.tar.gz https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && tar -x --strip-components=1 -C /usr/local/lib -f /tmp/ioncube.tar.gz ioncube/ioncube_loader_lin_${PHP_VERSION}.so
 
-RUN mv /usr/local/lib/ioncube_loader_lin_7.3.so /usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so
+RUN mkdir /tmp/ioncube \
+  && cd /tmp/ioncube \
+  && wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
+  && tar xvfz ioncube_loaders_lin_x86-64.tar.gz \
+  && cp ioncube/ioncube_loader_lin_7.3.so /usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so \
+  && bash -c 'echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so" > /usr/local/etc/php/conf.d/00-ionbube.ini'
+
 
 #RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.3" ]; then \
 #    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
