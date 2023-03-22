@@ -17,6 +17,8 @@ RUN docker-php-ext-configure zip \
 RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli
 
 RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.4" ]; then \
+    curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \ && mkdir -p /tmp/ioncube \ && tar -xvvzf ioncube.tar.gz \ && mv ioncube/ioncube_loader_lin_7.3.so php-config --extension-dir \ && rm -Rf ioncube.tar.gz ioncube \ && docker-php-ext-enable ioncube_loader_lin_7.3 \
+
     docker-php-ext-configure gd --with-jpeg --with-freetype \
       && docker-php-ext-install gd; \
     fi
@@ -25,8 +27,6 @@ RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.3" ];
     docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr \
       && docker-php-ext-install gd; \
     fi
-
-RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \ && mkdir -p /tmp/ioncube \ && tar -xvvzf ioncube.tar.gz \ && mv ioncube/ioncube_loader_lin_7.3.so php-config --extension-dir \ && rm -Rf ioncube.tar.gz ioncube \ && docker-php-ext-enable ioncube_loader_lin_7.3
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
