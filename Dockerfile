@@ -1,6 +1,6 @@
 ARG PHP_VERSION
 
-FROM php:7.3-fpm
+FROM php:${PHP_VERSION}-fpm
 
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Ubuntu Linux."
@@ -14,16 +14,20 @@ RUN docker-php-ext-configure zip \
 
 RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql iconv mysqli soap
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr  \
-      && docker-php-ext-install gd
+RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.4" ]; then \
+    docker-php-ext-configure gd --with-jpeg --with-freetype -with-webp \
+      && docker-php-ext-install gd; \
+    fi
 
-RUN mkdir /tmp/ioncube \
-  && cd /tmp/ioncube \
-  && wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
-  && tar xvfz ioncube_loaders_lin_x86-64.tar.gz \
-  && cp ioncube/ioncube_loader_lin_7.3.so /usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so \
-  && bash -c 'echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so" > /usr/local/etc/php/conf.d/00-ionbube.ini'
-
+RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.3" ]; then \
+    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr  \
+      && docker-php-ext-install gd \
+      && mkdir /tmp/ioncube \
+      && wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
+      && tar xvfz ioncube_loaders_lin_x86-64.tar.gz \
+      && cp ioncube/ioncube_loader_lin_7.3.so /usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so \
+      && bash -c 'echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20180731/ioncube_loader_lin_7.3.so" > /usr/local/etc/php/conf.d/00-ionbube.ini'; \
+    fi
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
