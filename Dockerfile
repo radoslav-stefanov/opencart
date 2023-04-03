@@ -5,11 +5,11 @@ FROM php:${PHP_VERSION}-fpm
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Ubuntu Linux."
 
-RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libxml2-dev wget libmcrypt-dev ssmtp
+RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libxml2-dev wget libmcrypt-dev msmtp
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN echo "sendmail_path=/usr/sbin/ssmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini \
+RUN echo "/usr/bin/msmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini \
     && groupadd -g 82 php && useradd --no-create-home --uid 82 --gid 82 php;
 
 RUN docker-php-ext-configure zip \
