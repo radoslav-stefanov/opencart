@@ -46,7 +46,7 @@ RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.0" ];
       && apt-get install -y -q --no-install-recommends ssmtp \
       && apt-get clean \
       && rm -r /var/lib/apt/lists/* \
-      && echo "sendmail_path=sendmail -i -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini; \
+      && echo "sendmail_path=/usr/sbin/ssmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini; \
     fi
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
