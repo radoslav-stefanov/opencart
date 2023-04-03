@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN echo "/usr/bin/msmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini \
+RUN echo "sendmail_path=/usr/bin/msmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini \
     && groupadd -g 82 php && useradd --no-create-home --uid 82 --gid 82 php;
 
 RUN docker-php-ext-configure zip \
