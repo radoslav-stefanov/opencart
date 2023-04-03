@@ -40,8 +40,13 @@ RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.1" ];
     fi
 
 RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.0" ]; then \
-      docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr  \
-      && docker-php-ext-install gd mcrypt; \
+    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr  \
+      && docker-php-ext-install gd mcrypt \
+      && apt-get update \
+      && apt-get install -y -q --no-install-recommends ssmtp \
+      && apt-get clean \
+      && rm -r /var/lib/apt/lists/* \
+      && echo "sendmail_path=sendmail -i -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini; \
     fi
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
