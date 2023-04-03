@@ -5,9 +5,12 @@ FROM php:${PHP_VERSION}-fpm
 LABEL Maintainer="Radoslav Stefanov <radoslav@rstefanov.info>" \
       Description="Lightweight container with Nginx and PHP-FPM, based on Ubuntu Linux."
 
-RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libxml2-dev wget libmcrypt-dev
+RUN apt-get update && apt-get install -y zip libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libxml2-dev wget libmcrypt-dev ssmtp
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN echo "sendmail_path=/usr/sbin/ssmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini \
+    && groupadd -g 82 php && useradd --no-create-home --uid 82 --gid 82 php;
 
 RUN docker-php-ext-configure zip \
     && docker-php-ext-install -j$(nproc) zip
@@ -41,13 +44,7 @@ RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.1" ];
 
 RUN if [ "$(echo ${PHP_VERSION} | sed -e 's/\([0-9]\.[0-9]\).*/\1/')" = "7.0" ]; then \
     docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr  \
-      && docker-php-ext-install gd mcrypt \
-      && apt-get update \
-      && apt-get install -y -q --no-install-recommends ssmtp \
-      && apt-get clean \
-      && rm -r /var/lib/apt/lists/* \
-      && echo "sendmail_path=/usr/sbin/ssmtp -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini \
-      && groupadd -g 82 php && useradd --no-create-home --uid 82 --gid 82 php; \
+      && docker-php-ext-install gd mcrypt; \
     fi
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
